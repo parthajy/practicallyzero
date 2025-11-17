@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Basic document setup -->
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+
+    <!-- Primary SEO tags -->
+    <title>PracticallyZero – Artificial Stupidity Engine</title>
+    <meta
+      name="description"
+      content="PracticallyZero is an artificial stupidity engine. Ask anything and get hilariously wrong, overconfident answers – maximum confidence, minimum accuracy."
+    />
+    <meta
+      name="keywords"
+      content="PracticallyZero, artificial stupidity, dumb AI, joke chatbot, funny chatbot, humor AI"
+    />
+    <meta name="author" content="PracticallyZero" />
+    <meta name="robots" content="index,follow" />
+
+    <!-- Canonical URL (update if your production domain changes) -->
+    <link rel="canonical" href="https://practicallyzero.com/" />
+
+    <!-- Favicon / app icons -->
+    <link rel="icon" type="image/svg+xml" href="/pz-logo.svg" />
+    <!-- You can add more icons later (apple-touch-icon, 32x32, 16x16, etc.) -->
+
+    <!-- Theme color for mobile address bar -->
+    <meta name="theme-color" content="#050608" />
+
+    <!-- Open Graph / social sharing -->
+    <!-- These help when your link is shared on WhatsApp, Facebook, etc. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="PracticallyZero – Artificial Stupidity Engine" />
+    <meta
+      property="og:description"
+      content="Ask anything, get the worst answer. PracticallyZero replies with confidently wrong, delightfully useless answers."
+    />
+    <meta property="og:url" content="https://practicallyzero.com/" />
+    <!-- Replace this with your actual share image path -->
+    <meta property="og:image" content="https://practicallyzero.com/og-image.png" />
+    <meta property="og:site_name" content="PracticallyZero" />
+
+    <!-- Twitter card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="PracticallyZero – Artificial Stupidity Engine" />
+    <meta
+      name="twitter:description"
+      content="Maximum confidence, minimum accuracy. A deliberately dumb AI for fun, jokes, and chaos."
+    />
+    <meta name="twitter:image" content="https://practicallyzero.com/og-image.png" />
+    <!-- Optional: your handle -->
+    <!-- <meta name="twitter:site" content="@yourhandle" /> -->
+
+    <!-- Structured data (basic WebApplication schema for SEO) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "PracticallyZero",
+        "url": "https://practicallyzero.com/",
+        "applicationCategory": "EntertainmentApplication",
+        "description": "PracticallyZero is an artificial stupidity engine that gives hilariously wrong answers on purpose.",
+        "operatingSystem": "Any"
+      }
+    </script>
+
+    <!-- Google tag (gtag.js) -->
+    <!-- Analytics: keep this as high in <head> as possible so page views are tracked reliably -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1DG3YCPK7V"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-1DG3YCPK7V");
+    </script>
+  </head>
+
+  <body>
+    <!-- Root element for the React app (Vite mounts into this) -->
+    <div id="root"></div>
+
+    <!-- Fallback message for users with JS disabled -->
+    <noscript>
+      PracticallyZero needs JavaScript to run. Please enable JavaScript to chat
+      with the dumbest AI on the internet.
+    </noscript>
+
+    <!-- Vite/React entry -->
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
