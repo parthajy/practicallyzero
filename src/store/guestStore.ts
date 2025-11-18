@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { useUserStore } from "./userStore";
 
 export type MessageRole = "user" | "ai";
 
@@ -82,8 +83,12 @@ export const useGuestStore = create<GuestState>((set, get) => ({
 
   newThread: () => {
     const state = get();
-    if (state.threadOrder.length >= 10) {
-      // guest limit
+
+    // 🔑 Only enforce the 10-thread limit for FREE users
+    const { plan } = useUserStore.getState();
+    const isFree = plan === "free";
+
+    if (isFree && state.threadOrder.length >= 10) {
       alert(
         "Free plan limit reached: 10 threads. Delete one to create a new one."
       );
