@@ -93,14 +93,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ plan }) => {
       <div className="px-3 py-3 border-b border-neutral-200 dark:border-neutral-800 flex items-center gap-2">
         {/* Just the icon, no rounded background */}
         <img
-          src="/pz-logo.svg"
-          alt="PracticallyZero logo"
-          className="h-7 w-7 object-contain"
-          onError={(e) => {
-            const t = e.currentTarget;
-            t.style.display = "none";
-          }}
-        />
+  src="/logo.svg"
+  alt="PracticallyZero logo"
+  className="h-7 w-7 object-contain"
+  onError={(e) => {
+    const t = e.currentTarget;
+    t.style.display = "none";
+  }}
+/>
         <div className="flex flex-col leading-tight">
           <span className="text-sm font-semibold text-neutral-900 dark:text-neutral-50">
             PracticallyZero
