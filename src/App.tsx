@@ -28,47 +28,47 @@ async function fetchOrCreateProfile(
 }
 
 const App = () => {
-  const { setUser, setPlan, plan } = useUserStore();
+  const { userId, email, setUser, setPlan, reset, plan } = useUserStore();
   const [mobileThreadsOpen, setMobileThreadsOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
 
-  // Initialise auth session + profile
+  // 1) On first mount, if we already have a stored userId, refresh plan from DB
   useEffect(() => {
-    const init = async () => {
-      console.log("[PZ] App init: calling supabase.auth.getSession()");
-      const {
-        data: { session },
-        error,
-      } = await supabase.auth.getSession();
-
-      if (error) {
-        console.error("[PZ] getSession error:", error.message);
-      } else {
-        console.log("[PZ] getSession session:", session);
+    const syncPlan = async () => {
+      if (!userId) {
+        console.log("[PZ] No stored userId on init; skipping plan sync.");
+        return;
       }
 
-      if (session?.user) {
-        const user = session.user;
-        console.log("[PZ] Found existing session for user:", user.id);
-        const userPlan = await fetchOrCreateProfile(
-          user.id,
-          user.email ?? null
-        );
-        console.log("[PZ] Profile plan from DB:", userPlan);
-        setUser(user.id, user.email ?? null);
-        setPlan(userPlan);
-      } else {
-        console.log("[PZ] No session on init – treating as logged out");
-        setUser(null, null);
-        setPlan("free");
-      }
+      console.log("[PZ] Found stored userId on init, syncing plan from DB…");
+      const freshPlan = await fetchOrCreateProfile(userId, email ?? null);
+      console.log("[PZ] Synced plan from DB:", freshPlan);
+      setPlan(freshPlan);
     };
 
-    init();
+    syncPlan();
+  }, [userId, email, setPlan]);
 
-    const { data: listener } = supabase.auth.onAuthStateChange(
+  // 2) Listen for auth state changes (login/logout)
+  useEffect(() => {
+    console.log("[PZ] Subscribing to supabase.auth.onAuthStateChange");
+    const { data } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log("[PZ] onAuthStateChange event:", event, "session:", session);
+        console.log(
+          "[PZ] onAuthStateChange event:",
+          event,
+          "session:",
+          session
+        );
+
+        // On first load Supabase fires INITIAL_SESSION.
+        // If it's null, don't touch our persisted user state.
+        if (event === "INITIAL_SESSION" && !session) {
+          console.log(
+            "[PZ] INITIAL_SESSION with no session – keeping stored user as-is."
+          );
+          return;
+        }
 
         if (session?.user) {
           const user = session.user;
@@ -77,24 +77,27 @@ const App = () => {
             user.email ?? null
           );
           console.log(
-            "[PZ] onAuthStateChange -> user logged in. Plan:",
+            "[PZ] Auth change -> user logged in/updated. Plan:",
             userPlan
           );
           setUser(user.id, user.email ?? null);
           setPlan(userPlan);
-        } else {
-          console.log("[PZ] onAuthStateChange -> no session (logged out)");
-          setUser(null, null);
-          setPlan("free");
+          return;
         }
+
+        // No session AND not INITIAL_SESSION => real logout
+        console.log("[PZ] Auth change -> no session, treating as logged out.");
+        reset();
       }
     );
 
+    const subscription = data?.subscription;
+
     return () => {
       console.log("[PZ] Cleaning up auth listener");
-      listener.subscription.unsubscribe();
+      subscription?.unsubscribe();
     };
-  }, [setUser, setPlan]);
+  }, [setUser, setPlan, reset]);
 
   const effectivePlan: PlanType = plan ?? "free";
 
