@@ -28,7 +28,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ plan }) => {
   const { openUpgrade } = useUpgradeStore();
 
   const userId = useUserStore((s) => s.userId);
-  const resetUser = useUserStore((s) => s.reset);
 
   useEffect(() => {
     if (!hydrated) hydrate();
@@ -42,49 +41,23 @@ export const Sidebar: React.FC<SidebarProps> = ({ plan }) => {
   const isFree = plan === "free";
   const isLoggedIn = !!userId;
 
-  const handleLogout = async () => {
+    const handleLogout = async () => {
     console.log("[PZ] Logout button clicked");
 
     try {
       console.log("[PZ] Calling supabase.auth.signOut() …");
       const { error } = await supabase.auth.signOut();
-      console.log(
-        "[PZ] supabase.auth.signOut result:",
-        error ? error.message : "ok (no error)"
-      );
+      if (error) {
+        console.error("[PZ] supabase.auth.signOut error:", error.message);
+      } else {
+        console.log("[PZ] supabase.auth.signOut ok");
+      }
     } catch (err) {
       console.error("[PZ] Error in supabase.auth.signOut:", err);
     }
 
-    // Kill any local user state regardless of Supabase result
-    try {
-      console.log("[PZ] Resetting user store");
-      resetUser();
-    } catch (err) {
-      console.error("[PZ] Error resetting user store:", err);
-    }
-
-    // HARD NUKE: remove auth tokens from localStorage
-    try {
-      console.log("[PZ] Clearing sb-* auth keys from localStorage");
-      const keysToRemove: string[] = [];
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (!key) continue;
-        if (key.startsWith("sb-") && key.endsWith("-auth-token")) {
-          keysToRemove.push(key);
-        }
-      }
-      keysToRemove.forEach((k) => {
-        console.log("[PZ] Removing localStorage key:", k);
-        localStorage.removeItem(k);
-      });
-    } catch (storageErr) {
-      console.error("[PZ] Error clearing localStorage sb-* keys:", storageErr);
-    }
-
-    console.log("[PZ] Forcing full reload after logout");
-    window.location.reload();
+    // Do NOT reset user store or touch localStorage here.
+    // App.tsx listens to onAuthStateChange and will call reset() on SIGNED_OUT.
   };
 
   return (
