@@ -8,6 +8,7 @@ import type { PlanType } from "./store/userStore";
 import { UpgradeModal } from "./components/billing/UpgradeModal";
 import { AuthPanel } from "./components/auth/AuthPanel";
 
+// Helper: create/fetch profile and return plan
 async function fetchOrCreateProfile(
   userId: string,
   email: string | null
@@ -26,7 +27,7 @@ async function fetchOrCreateProfile(
   return (data?.plan ?? "free") as PlanType;
 }
 
-function App() {
+const App = () => {
   const { setUser, setPlan, plan } = useUserStore();
   const [mobileThreadsOpen, setMobileThreadsOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
@@ -149,6 +150,6 @@ function App() {
       <UpgradeModal />
     </>
   );
-}
+};
 
 export default App;
